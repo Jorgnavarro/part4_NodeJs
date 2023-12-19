@@ -39,10 +39,10 @@ const favoriteBlog = (blogs) => {
 }
 
 const mostBlogs = (blogs) => {
-    //agrupamos los autores y el número de blogs
+    //agrupamos los autores por nombre
     const totalBlogsByAuthor = _.countBy(blogs, function(b) {return b.author})
     console.log(totalBlogsByAuthor)
-    //obtenemos la cantidad de los blogs agrupados, y sacamos el mayor
+    //obtenemos la cantidad de los blogs agrupados por cada author, y sacamos el mayor
     const counterBlogs = _.max(_.valuesIn(totalBlogsByAuthor))
     console.log(counterBlogs)
     let result = {}
@@ -59,17 +59,26 @@ const mostBlogs = (blogs) => {
 }
 
 const mostLikes = (blogs) => {
-    const totalLikes = _.sumBy(blogs, "likes")
     const groupByAuthor = _.groupBy(blogs, function(b) {
         return b.author
     })
-    console.log(totalLikes)
     console.log(groupByAuthor)
-    _.forEach(groupByAuthor, function(value, key){
-        let likes = _.sumBy(value, "likes")
-        console.log(likes)
-        //console.log(key[value])
-    })
+    let authorLikes = 0
+    let result = {}
+    //iteramos un objeto que contiene arreglos
+    for (const author in groupByAuthor) {
+        //por cada arreglo dentro del objeto, sumamos la propiedad likes
+        let likesByAuthor = _.sumBy(groupByAuthor[author], "likes") 
+        //por cada iteración almacenamos al autor con más likes y eso es lo que retornamos al final
+        if(authorLikes<likesByAuthor){
+           authorLikes = likesByAuthor
+           result = {
+            author: author,
+            likes: likesByAuthor,
+           }
+        }
+    }
+    return result
 }
 
 module.exports = {
