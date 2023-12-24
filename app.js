@@ -1,6 +1,7 @@
 import config from './utils/config.js'
 import logger from './utils/logger.js'
 import express from 'express'
+import 'express-async-errors'
 const app = express()
 import cors from 'cors'
 import mongoose from 'mongoose'
@@ -10,6 +11,7 @@ import middleware from './utils/middleware.js'
 logger.info('conneting to', config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI)
+  // eslint-disable-next-line no-unused-vars
   .then(result => {
     logger.info('Conected to MongoDB')
   })
