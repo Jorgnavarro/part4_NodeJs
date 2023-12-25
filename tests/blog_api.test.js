@@ -29,6 +29,14 @@ test('Confirm total of blogs in DDBB', async () => {
   expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
+test('The ID property must exist', async () => {
+  const formatBlogs = await helper.blogsInDb()
+
+  formatBlogs.map(blog => {
+    expect(blog.id).toBeDefined()
+  })
+})
+
 
 
 afterAll(() => {
