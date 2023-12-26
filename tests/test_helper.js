@@ -51,6 +51,22 @@ const initialBlogs = [
   }
 ]
 
+const nonExistingId = async () => {
+
+  const blog = new Blog({
+    title: 'Creating a new blog for delete test',
+    author: 'Luis Navarro',
+    url: 'http://followthepath.com',
+    likes: '10'
+  })
+
+  await blog.save()
+
+  await blog.deleteOne()
+
+  return blog._id.toString()
+}
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
 
@@ -59,6 +75,7 @@ const blogsInDb = async () => {
 
 export default {
   initialBlogs,
+  nonExistingId,
   blogsInDb
 }
 
