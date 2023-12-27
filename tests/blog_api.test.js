@@ -39,6 +39,14 @@ describe('When there is initially some blogs saved', () => {
     expect(contents).toContain('Canonical string reduction')
   })
 
+  test('The ID property must exist', async () => {
+    const formatBlogs = await helper.blogsInDb()
+
+    formatBlogs.map(blog => {
+      expect(blog.id).toBeDefined()
+    })
+  })
+
 })
 
 describe('Viewing a specific note', () => {
@@ -55,69 +63,102 @@ describe('Viewing a specific note', () => {
 
     expect(resultBlog.body).toEqual(blogToView)
   })
+
+
 })
 
+describe('Addition of a new blog', () => {
 
+  test('succeeds with valid data', async () => {
+    const newBlog = {
+      title: 'Adding a new blog from testing',
+      author: 'Luis Navarro',
+      url: 'http://jorgluisnavarro.com',
+      likes: 10
+    }
 
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-test('The ID property must exist', async () => {
-  const formatBlogs = await helper.blogsInDb()
+    const blogsUpdate = await helper.blogsInDb()
 
-  formatBlogs.map(blog => {
-    expect(blog.id).toBeDefined()
+    expect(blogsUpdate).toHaveLength(helper.initialBlogs.length + 1)
+
+    const titles = blogsUpdate.map(blog => blog.title)
+
+    expect(titles).toContain('Adding a new blog from testing')
+  })
+
+  test('If the likes property is not there it should be zero', async () => {
+
+    const newBlog = {
+      title: 'Adding a new blog without likes property',
+      author: 'Luis Navarro',
+      url: 'http://jorgluisnavarro.com',
+    }
+
+    const blogCreated = await api
+      .post('/api/blogs')
+      .send(newBlog)
+
+    expect(blogCreated.body.likes).toBe(0)
+  })
+
+  test('fails with status 400 if data invalid', async () => {
+    const newBlog = {
+      author: 'Luis Navarro',
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+
+    const blogsUpdate = await helper.blogsInDb()
+
+    expect(blogsUpdate).toHaveLength(helper.initialBlogs.length)
   })
 })
 
-test('A valid blog can be added', async () => {
-  const newBlog = {
-    title: 'Adding a new blog from testing',
-    author: 'Luis Navarro',
-    url: 'http://jorgluisnavarro.com',
-    likes: 10
-  }
+describe('Modifying a blog', () => {
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+  test('update the property likes a blog', async () => {
+    const blogsAtStart = await helper.blogsInDb()
 
-  const blogsUpdate = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[2]
 
-  expect(blogsUpdate).toHaveLength(helper.initialBlogs.length + 1)
+    const updatedBlog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: 20
+    }
 
-  const titles = blogsUpdate.map(blog => blog.title)
+    const result = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
 
-  expect(titles).toContain('Adding a new blog from testing')
+    expect(result.body.likes).toBe(20)
+  })
+
 })
 
-test('If the likes property is not there it should be zero', async () => {
-  const newBlog = {
-    title: 'Adding a new blog without likes property',
-    author: 'Luis Navarro',
-    url: 'http://jorgluisnavarro.com',
-  }
+describe('Deletion of a blog', () => {
 
-  const blogCreated = await api
-    .post('/api/blogs')
-    .send(newBlog)
+  test('Succeeds with status code 204 if id valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
 
-  expect(blogCreated.body.likes).toBe(0)
-})
+    const blogToDelete = blogsAtStart[0]
 
-test('A invalid blog can not be added', async () => {
-  const newBlog = {
-    author: 'Luis Navarro',
-  }
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(400)
-
-  const blogsUpdate = await helper.blogsInDb()
-
-  expect(blogsUpdate).toHaveLength(helper.initialBlogs.length)
+  })
 })
 
 afterAll(() => {
