@@ -1,0 +1,25 @@
+###Creating a new blog with userId 6590875f6e939d9f6558c260
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "We need to stay focus, we can not forget the basic way",
+    "author": "Kurapika Stain",
+    "url": "http://hunterxhunter.com",
+    "likes": 23,
+    "userId" : "6590875f6e939d9f6558c260"
+}
+
+###Creating a new blog with userId 659087576e939d9f6558c25c
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "We never stop to coding, today is the last day of the year 2023",
+    "author": "Jorge Navarro",
+    "url": "http://jorgnavarro.com",
+    "likes": 31,
+    "userId" : "659087576e939d9f6558c25c"
+}
+
+
