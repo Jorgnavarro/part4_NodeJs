@@ -22,24 +22,24 @@ blogsRouter.get('/:id', async (req, res) => {
 
 })
 
-const getTokenFrom = req => {
-  const authorization = req.get('authorization')
-  if(authorization && authorization.toLowerCase().startsWith('bearer ')){
-    return authorization.substring(7)
-  }
-  return null
-}
+// const getTokenFrom = req => {
+//   const authorization = req.get('authorization')
+//   if(authorization && authorization.toLowerCase().startsWith('bearer ')){
+//     return authorization.substring(7)
+//   }
+//   return null
+// }
 
 
 
 blogsRouter.post('/', async (req, res) => {
   const body = req.body
 
-  const token = getTokenFrom(req)
+  //const token = getTokenFrom(req)
 
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+  const decodedToken = jwt.verify(req.token, process.env.SECRET)
 
-  if(!token || !decodedToken){
+  if(!req.token || !decodedToken){
     return res.status(401).json({ error: 'token missing or invalid' })
   }
 
@@ -78,9 +78,17 @@ blogsRouter.put('/:id', async (req, res) => {
 
 blogsRouter.delete('/:id', async (req, res) => {
 
-  await Blog.findByIdAndDelete(req.params.id)
+  const blog = await Blog.findById(req.params.id)
 
-  res.status(204).end()
+  const userId = await User.findById(blog.user)
+
+  if( blog.user.toString() === userId._id.toString() ){
+    await Blog.findByIdAndDelete(req.params.id)
+    res.status(204).end()
+  }else{
+    return res.status(401).json({ error: 'The token is missing or invalid to perform this operation.' })
+  }
+
 })
 
 export default blogsRouter

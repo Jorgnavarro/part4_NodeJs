@@ -47,10 +47,10 @@ Content-Type: application/json
 ###Creating a new note with user 1 simulation login
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlByb2dyYW1tZXIiLCJpZCI6IjY1OTA4NzU3NmU5MzlkOWY2NTU4YzI1YyIsImlhdCI6MTcwNDEyODAzMSwiZXhwIjoxNzA0MTMxNjMxfQ.eN1U5GsIMdGvo9BHvH57c68CgFR2qb7I0vCsbWQXepg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlByb2dyYW1tZXIiLCJpZCI6IjY1OTA4NzU3NmU5MzlkOWY2NTU4YzI1YyIsImlhdCI6MTcwNDEzMjU5NCwiZXhwIjoxNzA0MTM2MTk0fQ.OyjupYy6fsfazJWGMBRCmumrt5aeEwGMTFz4gaadRIc
 
 {
-    "title": "A new year, a new oportunity for try to do the best performance as possible",
+    "title": "Refactoring the code, middleware created in a new way",
     "author": "Jorge Navarro",
     "url": "http://programmer.com",
     "likes": 30
@@ -59,12 +59,24 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlByb
 ###Creating a new note with user 2 simulation login
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikh1bnRlciIsImlkIjoiNjU5MDg3NWY2ZTkzOWQ5ZjY1NThjMjYwIiwiaWF0IjoxNzA0MTI5MTg3LCJleHAiOjE3MDQxMzI3ODd9.u52yplT386M-PKis68XKYPVE0Incl9Tub23VExCmACA
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikh1bnRlciIsImlkIjoiNjU5MDg3NWY2ZTkzOWQ5ZjY1NThjMjYwIiwiaWF0IjoxNzA0MTU1ODk0LCJleHAiOjE3MDQxNTk0OTR9.Qrk5dQi1OL1A-XSZ2RvTskgrqgJbElMsbtU32aExQq4
 
 {
-    "title": "Every day is a new oportunity for do the things better",
+    "title": "Blog for deleted",
     "author": "Kurapika Kurta",
     "url": "http://hunterxhunter.com",
-    "likes": 50
+    "likes": 10
 }
+
+###Delete a blog with jwt, Hunter user
+DELETE http://localhost:3003/api/blogs/65935f4d896a4130efa692b6
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikh1bnRlciIsImlkIjoiNjU5MDg3NWY2ZTkzOWQ5ZjY1NThjMjYwIiwiaWF0IjoxNzA0MTU1ODk0LCJleHAiOjE3MDQxNTk0OTR9.Qrk5dQi1OL1A-XSZ2RvTskgrqgJbElMsbtU32aExQq4
+
+###Delete a blog with jwt, Programmer user
+DELETE http://localhost:3003/api/blogs/6591bbc7934e96ccfaef7cf8
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlByb2dyYW1tZXIiLCJpZCI6IjY1OTA4NzU3NmU5MzlkOWY2NTU4YzI1YyIsImlhdCI6MTcwNDE1NjAzMSwiZXhwIjoxNzA0MTU5NjMxfQ.DGa8pkwCS7SQHpi7F3eO74cVPCm922JhpXczehjaoLc
+
+
 

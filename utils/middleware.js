@@ -1,5 +1,13 @@
 import logger from './logger.js'
 
+
+
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknow endpoint' })
+}
+
+
 const requestLogger = (req, res, next) => {
   logger.info('Method:', req.method)
   logger.info('Path: ', req.path)
@@ -8,11 +16,13 @@ const requestLogger = (req, res, next) => {
   next()
 }
 
-
-const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: 'unknow endpoint' })
+const tokenExtractor = (req, res, next) => {
+  const authorization = req.get('authorization')
+  if(authorization && authorization.toLowerCase().startsWith('bearer ')){
+    req.token = authorization.substring(7)
+  }
+  next()
 }
-
 
 //manejar un error cuando el formato proporcionado en el parámetro del id es incorrecto o cuando no pasa las validaciones de mongoose
 const errorHandler = (err, req, res, next) => {
@@ -33,5 +43,6 @@ const errorHandler = (err, req, res, next) => {
 export default {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 }
