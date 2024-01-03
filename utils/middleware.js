@@ -1,4 +1,5 @@
 import logger from './logger.js'
+import jwt from 'jsonwebtoken'
 
 
 
@@ -16,6 +17,7 @@ const requestLogger = (req, res, next) => {
   next()
 }
 
+
 const tokenExtractor = (req, res, next) => {
   const authorization = req.get('authorization')
   if(authorization && authorization.toLowerCase().startsWith('bearer ')){
@@ -23,6 +25,19 @@ const tokenExtractor = (req, res, next) => {
   }
   next()
 }
+
+const userExtractor = (req, res, next) => {
+  const decodedToken = jwt.verify(req.token, process.env.SECRET)
+  if(!req.token || !decodedToken){
+    return res.status(401).json({ error: 'token missing or invalid' })
+  }
+  req.user = {
+    username: decodedToken.username,
+    id: decodedToken.id
+  }
+  next()
+}
+
 
 //manejar un error cuando el formato proporcionado en el parámetro del id es incorrecto o cuando no pasa las validaciones de mongoose
 const errorHandler = (err, req, res, next) => {
@@ -44,5 +59,6 @@ export default {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }

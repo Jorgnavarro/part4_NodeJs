@@ -8,12 +8,21 @@ Content-Type: application/json
 }
 
 ###Another user
-
 POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
     "username": "Hunter",
     "name": "Gon Freecks",
+    "password": "khease"
+}
+
+###Another user
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "Jhon Doe",
     "password": "khease"
 }

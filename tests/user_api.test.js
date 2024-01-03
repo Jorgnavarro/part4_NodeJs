@@ -6,20 +6,22 @@ import helper from './test_helper.js'
 import bcrypt from 'bcrypt'
 import User from '../models/user.js'
 
-describe('When there is initially one user in db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('khease', 10)
+beforeEach(async () => {
+  await User.deleteMany({})
 
-    const user = new User({
-      username: 'root',
-      passwordHash
-    })
+  const passwordHash = await bcrypt.hash('khease', 10)
 
-    await user.save()
+  const user = new User({
+    username: 'root',
+    passwordHash
   })
 
+  await user.save()
+})
+
+
+describe('When there is initially one user in db', () => {
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
 

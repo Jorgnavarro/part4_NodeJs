@@ -3,6 +3,9 @@ import supertest from 'supertest'
 import app from '../app.js'
 import helper from './test_helper.js'
 import Blog from '../models/blog.js'
+import User from '../models/user.js'
+import jwt from 'jsonwebtoken'
+
 
 const api = supertest(app)
 
@@ -49,7 +52,7 @@ describe('When there is initially some blogs saved', () => {
 
 })
 
-describe('Viewing a specific note', () => {
+describe('Viewing a specific blog', () => {
 
   test('succeeds with a valid id', async () => {
     const blogsAtStart = await helper.blogsInDb()
@@ -70,15 +73,19 @@ describe('Viewing a specific note', () => {
 describe('Addition of a new blog', () => {
 
   test('succeeds with valid data', async () => {
+    const user = await User.findOne( { username: 'root' } )
+
     const newBlog = {
       title: 'Adding a new blog from testing',
       author: 'Luis Navarro',
       url: 'http://jorgluisnavarro.com',
       likes: 10
     }
+    const token = jwt.sign({ username: user.username, id: user._id }, process.env.SECRET, { expiresIn: 60*60 })
 
     await api
       .post('/api/blogs')
+      .set( { Authorization:`bearer ${token}` } )
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -93,6 +100,7 @@ describe('Addition of a new blog', () => {
   })
 
   test('If the likes property is not there it should be zero', async () => {
+    const user = await User.findOne( { username: 'root' } )
 
     const newBlog = {
       title: 'Adding a new blog without likes property',
@@ -100,8 +108,11 @@ describe('Addition of a new blog', () => {
       url: 'http://jorgluisnavarro.com',
     }
 
+    const token = jwt.sign({ username: user.username, id: user._id }, process.env.SECRET, { expiresIn: 60*60 })
+
     const blogCreated = await api
       .post('/api/blogs')
+      .set( { Authorization:`bearer ${token}` } )
       .send(newBlog)
 
     expect(blogCreated.body.likes).toBe(0)
@@ -150,12 +161,27 @@ describe('Modifying a blog', () => {
 describe('Deletion of a blog', () => {
 
   test('Succeeds with status code 204 if id valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
 
-    const blogToDelete = blogsAtStart[0]
+    const user = await User.findOne( { username: 'root' } )
+
+    const newBlog = {
+      title: 'Adding a new blog from delete',
+      author: 'Luis Navarro',
+      url: 'http://jorgluisnavarro.com',
+      likes: 40
+    }
+    const token = jwt.sign({ username: user.username, id: user._id }, process.env.SECRET, { expiresIn: 60*60 })
+
+    const result = await api
+      .post('/api/blogs')
+      .set( { Authorization:`bearer ${token}` } )
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
     await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
+      .delete(`/api/blogs/${result.body.id}`)
+      .set( { Authorization:`bearer ${token}` } )
       .expect(204)
 
   })

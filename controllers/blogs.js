@@ -1,7 +1,9 @@
 import { Router } from 'express'
+import middleware from '../utils/middleware.js'
 import Blog from '../models/blog.js'
 import User from '../models/user.js'
-import jwt from 'jsonwebtoken'
+
+
 
 const blogsRouter = Router()
 
@@ -22,34 +24,17 @@ blogsRouter.get('/:id', async (req, res) => {
 
 })
 
-// const getTokenFrom = req => {
-//   const authorization = req.get('authorization')
-//   if(authorization && authorization.toLowerCase().startsWith('bearer ')){
-//     return authorization.substring(7)
-//   }
-//   return null
-// }
 
-
-
-blogsRouter.post('/', async (req, res) => {
+blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
   const body = req.body
 
-  //const token = getTokenFrom(req)
-
-  const decodedToken = jwt.verify(req.token, process.env.SECRET)
-
-  if(!req.token || !decodedToken){
-    return res.status(401).json({ error: 'token missing or invalid' })
-  }
-
-  const user = await User.findById(decodedToken.id)
+  const user = await User.findById(req.user.id)
 
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes || 0,
+    likes: body.likes === undefined ? 0 : body.likes,
     user: user._id
   })
 
@@ -76,13 +61,13 @@ blogsRouter.put('/:id', async (req, res) => {
   res.json(updatedBlog)
 })
 
-blogsRouter.delete('/:id', async (req, res) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (req, res) => {
 
   const blog = await Blog.findById(req.params.id)
 
-  const userId = await User.findById(blog.user)
+  const userId = req.user.id
 
-  if( blog.user.toString() === userId._id.toString() ){
+  if( blog.user.toString() === userId ){
     await Blog.findByIdAndDelete(req.params.id)
     res.status(204).end()
   }else{
