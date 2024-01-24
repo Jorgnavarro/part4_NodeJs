@@ -11,6 +11,17 @@ usersRouter.get('/', async (req, res) => {
   res.json(users)
 })
 
+usersRouter.get('/:username', async (req, res) => {
+
+  const user = await User.find({ username: req.params.username })
+
+  if(user.length>0){
+    res.json(user)
+  }else{
+    res.status(404).end()
+  }
+})
+
 usersRouter.post('/', async (req, res) => {
   const body = req.body
 

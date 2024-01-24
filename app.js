@@ -10,7 +10,14 @@ import usersRouter from './controllers/users.js'
 import blogsRouter from './controllers/blogs.js'
 import loginRouter from './controllers/login.js'
 import middleware from './utils/middleware.js'
+import testingRouter from './controllers/testing.js'
+
+if(process.env.NODE_ENV === 'test'){
+  app.use('/api/testing', testingRouter)
+}
+
 logger.info('conneting to', config.MONGODB_URI)
+
 
 mongoose.connect(config.MONGODB_URI)
   // eslint-disable-next-line no-unused-vars
