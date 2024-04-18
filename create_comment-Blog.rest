@@ -1,0 +1,15 @@
+###Creating a new blog with userId 659087576e939d9f6558c25c
+POST http://localhost:3003/api/blogs/66212f2137436602024e8281/comments
+Content-Type: application/json
+
+{
+    "comment": "I'm speechless"
+}
+
+###Creating a new blog with userId 659087576e939d9f6558c25c
+POST http://localhost:3003/api/blogs/66212f2137436602024e8281/comments
+Content-Type: application/json
+
+{
+    "comment": "Thanks to God..."
+}

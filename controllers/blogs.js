@@ -35,6 +35,7 @@ blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
     author: body.author,
     url: body.url,
     likes: body.likes === undefined ? 0 : body.likes,
+    comments: body.comments === undefined ? [] : body.comments,
     user: user._id
   })
 
@@ -44,6 +45,28 @@ blogsRouter.post('/', middleware.userExtractor, async (req, res) => {
   res.json(savedBlog)
 
 })
+
+blogsRouter.post('/:id/comments', async (req, res) => {
+  const content = req.body
+  console.log(content)
+  const blog = await Blog.findById(req.params.id)
+
+  console.log(blog)
+
+  if(!blog){
+    return res.status(404).json({ error: 'Blog not found' })
+  }
+
+  blog.comments.push(content)
+
+  const blogWithComment  = await blog.save()
+
+  res.json(blogWithComment)
+
+
+})
+
+
 
 blogsRouter.put('/:id', middleware.userExtractor, async (req, res) => {
 
