@@ -13,3 +13,20 @@ Content-Type: application/json
 {
     "comment": "Thanks to God..."
 }
+
+
+###Creating a new blog with id 6621519ff5fed5d0eebcc37c
+POST http://localhost:3003/api/blogs/6621519ff5fed5d0eebcc37c/comments
+Content-Type: application/json
+
+{
+    "comment": "The article it´s very professional"
+}
+
+###Creating a new blog with id 6621519ff5fed5d0eebcc37c
+POST http://localhost:3003/api/blogs/6621519ff5fed5d0eebcc37c/comments
+Content-Type: application/json
+
+{
+    "comment": "Awesome words, congratulaions."
+}

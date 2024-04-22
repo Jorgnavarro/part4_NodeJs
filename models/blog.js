@@ -22,7 +22,7 @@ const blogSchema = new mongoose.Schema({
   },
   comments: [
     {
-      comment: String
+      comment: String,
     }
   ]
 })
